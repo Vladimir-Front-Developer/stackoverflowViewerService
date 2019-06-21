@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'app-authorization',
@@ -7,46 +7,32 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./authorization.component.scss']
 })
 export class AuthorizationComponent implements OnInit {
-  config: {} = {
-    url: ''
-  }
+  
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
-    const options: {} = {
-      client_id: 15619,
-      scope: {
-        read_inbox: true,
-        no_expiry: true,
-        write_access: true,
-        private_info: true
+    const headers = new HttpHeaders()
+    headers.set( 'Access-Control-Allow-Origin', '*')
+    headers.set('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    headers.set('key', 'z7tCKsNBm0ETQIX9EIEZjQ')
 
-      },
-      redirect_uri: 'localhost:4200'
+    const params = new HttpParams()
+    // params.set('client_id', '15627')
+    // params.set('redirect_uri', 'http://localhost:4200')
+    // params.set('key', 'z7tCKsNBm0ETQIX9EIEZjQ')
+    // params.set('order', 'desc')
+    // params.set('sort', 'activity')
+    // params.set('site', 'stackoverflow.com')
+
+    const options = {
+      headers: headers,
+      params: params
     }
-    this.http.get('https://stackoverflow.com/oauth/dialog', options)
-    .subscribe((data) => {
+    this.http.get('https://api.stackexchange.com/2.2/sites', options).subscribe((data) => {
       console.log(data)
+    },
+    error => {
+      console.log(error)
     })
-  }
-  // get(url: string, 
-  // options: { headers?: HttpHeaders | { [header: string]: string | string[]; };
-  // observe: "events"; params?: HttpParams | { [param: string]: string | string[]; };
-  // reportProgress?: boolean; responseType?: "json";
-  // withCredentials?: boolean; }): Observable<HttpEvent<Object>>
-  
-  showConfig() {
-    // this.configService.getConfig()
-    //   .subscribe(
-    //     (data: Config) => this.config = { ...data }, // success path
-    //     error => this.error = error // error path
-    //   );
-  }
-  getConfig() {
-    // return this.http.get<Config>(this.configUrl)
-    //   .pipe(
-    //     retry(3), // retry a failed request up to 3 times
-    //     catchError(this.handleError) // then handle the error
-    //   );
   }
 }
